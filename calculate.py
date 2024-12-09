@@ -23,6 +23,12 @@ class Instruction:
         print(f"Container Id: {self.container_id}")
         print(f"Starting Location: {self.starting_location[0]}, {self.starting_location[1]} ") 
         print(f"Ending Location: {self.ending_location[0]}, {self.ending_location[1]} ") 
+
+    def __lt__(self, other):
+        return other
+    
+    def __gt__(self, other):
+        return other
     
 
 class Calculate:
@@ -116,6 +122,28 @@ class Calculate:
         if(self.is_start_legal(rowStart,colStart)):
                 # TODO: [LOG] container [name] was offloaded from the ship.
                 self.ship_bay_array[rowStart][colStart] = manifest.Container(0, "UNUSED",-1, rowStart, colStart)
+
+    # Searches the manifest 2D array for placeable slots (ie, the first available layer of open spaces in each column)
+    # Returns a list of 2-element tuples that represent the indices of placeable slots
+    def findPlaceableSlots(self):
+        foundInColumn = False
+        placeableSlots = []
+
+        for column in len(self.ship_bay_array[0]):
+            foundInColumn = False
+
+            for row in len(self.ship_bay_array):
+                if (row < len(self.ship_bay_array)):
+                    if self.ship_bay_array[row][column].description != "UNUSED":
+                        placeableSlots.append((row, column))
+                        foundInColumn = True
+                        break 
+
+            if (foundInColumn):
+                break
+                
+        
+
 
 
     # returns the next ID needed to uniquely identify a container and will update the manifest class's ID global containerID variable
